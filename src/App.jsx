@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
+import AuthView from "./components/AuthView";
 import DashboardView from "./components/DashboardView";
 import BankSoalView from "./components/BankSoalView";
 import TambahSoalForm from "./components/TambahSoalForm";
@@ -24,6 +25,7 @@ const members = [
 ];
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [sessions] = useState(initialSessions);
   const [questions, setQuestions] = useState(() => {
@@ -37,7 +39,7 @@ export default function App() {
   const [notice, setNotice] = useState("");
 
   const activeClass = {
-    name: "XII MIPA 1",
+    name: currentUser?.className || "XII MIPA 1",
     students: 30,
   };
 
@@ -54,6 +56,17 @@ export default function App() {
     setTimeout(() => {
       setNotice((prev) => (prev === msg ? "" : prev));
     }, 3000);
+  };
+
+  const handleLoginSuccess = (profile) => {
+    setCurrentUser(profile);
+    setActiveMenu("dashboard");
+    showNotice(`Selamat datang, ${profile.name} (${profile.role}).`);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveMenu("dashboard");
   };
 
   const handleAddQuestion = (newQuestion) => {
@@ -78,6 +91,15 @@ export default function App() {
   const hotsPercent =
     questions.length > 0 ? Math.round((hotsCount / questions.length) * 100) : 0;
 
+  if (!currentUser) {
+    return (
+      <AuthView
+        defaultClassName={activeClass.name}
+        onLoginSuccess={handleLoginSuccess}
+      />
+    );
+  }
+
   return (
     <div className="layout">
       <Sidebar
@@ -90,19 +112,27 @@ export default function App() {
       <main className="main-content">
         <header className="topbar">
           <div>
-            <h1>EduQuest · Dashboard Guru</h1>
+            <h1>GameEdu · Dashboard Interaktif</h1>
             <p>
-              Mengelola soal, sesi game, kelas dan siswa, dan laporan · Ruang{" "}
-              {activeClass.name}
+              {currentUser.name} ({currentUser.role}) · Ruang {activeClass.name}
             </p>
           </div>
-          <button
-            type="button"
-            className="btn-blue"
-            onClick={() => setActiveMenu("tambah-soal")}
-          >
-            + Tambah soal
-          </button>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className="btn-blue"
+              onClick={() => setActiveMenu("tambah-soal")}
+            >
+              + Tambah soal
+            </button>
+            <button
+              type="button"
+              className="auth-secondary-btn"
+              onClick={handleLogout}
+            >
+              Keluar
+            </button>
+          </div>
         </header>
 
         {notice && (
@@ -161,7 +191,7 @@ export default function App() {
               {activeMenu === "kelas-siswa" &&
                 `Kelas & siswa (${activeClass.name})`}
               {activeMenu === "laporan" && "Laporan hasil belajar"}
-              {activeMenu === "pengaturan" && "Pengaturan EduQuest"}
+              {activeMenu === "pengaturan" && "Pengaturan GameEdu"}
             </h2>
             <p>
               Anggota terdaftar di rombel <strong>{activeClass.name}</strong>{" "}
