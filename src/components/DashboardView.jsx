@@ -8,6 +8,37 @@ export default function DashboardView({
 }) {
   const latestQuestions = questions.slice(0, 3);
 
+  const members = [
+    {
+      id: 1,
+      initials: "VA",
+      avatarClass: "avatar-sm",
+      name: "Varenza Andre Saputra",
+      nim: "2455202073",
+    },
+    {
+      id: 2,
+      initials: "IA",
+      avatarClass: "avatar-sm alt",
+      name: "Ilham Alfiando",
+      nim: "2455202032",
+    },
+    {
+      id: 3,
+      initials: "DP",
+      avatarClass: "avatar-sm",
+      name: "Dendi Perdiansah",
+      nim: "2455202020",
+    },
+    {
+      id: 4,
+      initials: "AY",
+      avatarClass: "avatar-sm alt",
+      name: "Apri Yansyah",
+      nim: "2455202010",
+    },
+  ];
+
   return (
     <div className="guru-grid">
       <div className="guru-main-col">
@@ -163,21 +194,16 @@ export default function DashboardView({
         </section>
 
         <section className="card side-panel">
-          <h3>Ajakan berbagi soal</h3>
-          <div className="share-item">
-            <span className="avatar-sm">RK</span>
-            <div>
-              <strong>[Raka · Matematika]</strong>
-              <small>Membagikan 30 soal Bab 2 Fungsi</small>
+          <h3>Tim pengembang / anggota</h3>
+          {members.map((member) => (
+            <div className="share-item" key={member.id}>
+              <span className={member.avatarClass}>{member.initials}</span>
+              <div>
+                <strong>{member.name}</strong>
+                <small>{member.nim}</small>
+              </div>
             </div>
-          </div>
-          <div className="share-item">
-            <span className="avatar-sm alt">ND</span>
-            <div>
-              <strong>[Nadia · Fisika]</strong>
-              <small>Mengajak menyusun bank soal latihan</small>
-            </div>
-          </div>
+          ))}
         </section>
       </aside>
     </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const quizDeck = [
+const fallbackDeck = [
   {
     q: "Jika matriks A = [[2, 1], [0, 3]], determinannya adalah?",
     options: { A: "5", B: "6", C: "3", D: "2" },
@@ -24,12 +24,23 @@ const colorMap = {
   D: "c-pink",
 };
 
-export default function MobilePreviewView() {
+export default function MobilePreviewView({ questions = [] }) {
+  const quizDeck =
+    questions.length > 0
+      ? questions.map((item) => ({
+          q: item.question,
+          options: item.options,
+          answer: item.answer,
+          points: 120,
+          exp: item.explanation || "Periksa kembali langkah penyelesaian soal.",
+        }))
+      : fallbackDeck;
+
   const [step, setStep] = useState("join");
-  const [playerName, setPlayerName] = useState("Nadia");
+  const [playerName, setPlayerName] = useState("Varenza");
   const [roomCode, setRoomCode] = useState("519 842");
   const [qIndex, setQIndex] = useState(0);
-  const [score, setScore] = useState(820);
+  const [score, setScore] = useState(0);
   const [lastResult, setLastResult] = useState(null);
 
   const currentQ = quizDeck[qIndex % quizDeck.length];
@@ -93,7 +104,11 @@ export default function MobilePreviewView() {
           <button
             type="button"
             className="btn-orange full-w"
-            onClick={() => setStep("play")}
+            onClick={() => {
+              setQIndex(0);
+              setLastResult(null);
+              setStep("play");
+            }}
           >
             Masuk arena
           </button>
@@ -110,7 +125,7 @@ export default function MobilePreviewView() {
             Soal {(qIndex % quizDeck.length) + 1} / {quizDeck.length}
           </span>
           <span>
-            {playerName || "Nadia"} · {score} poin
+            {playerName || "Peserta"} · {score} poin
           </span>
         </div>
 
@@ -143,7 +158,7 @@ export default function MobilePreviewView() {
       <div className="phone-frame result-phone">
         <div className="phone-top">
           <span>Kode room: {roomCode}</span>
-          <span>Peringkat #2</span>
+          <span>Peringkat #1</span>
         </div>
 
         <div
@@ -153,16 +168,16 @@ export default function MobilePreviewView() {
         >
           <strong>
             {!lastResult
-              ? "Benar!"
+              ? "Siap menjawab"
               : lastResult.isRight
               ? "Benar!"
               : "Belum tepat"}
           </strong>
           <small>
             {!lastResult
-              ? "+120 poin · menjawab dalam 6 detik"
+              ? "Pilih salah satu opsi di sebelah kiri"
               : lastResult.isRight
-              ? `+${lastResult.earned} poin · menjawab dalam 6 detik`
+              ? `+${lastResult.earned} poin · jawaban tersimpan`
               : `Kunci jawaban: ${currentQ.answer}`}
           </small>
         </div>
@@ -170,7 +185,7 @@ export default function MobilePreviewView() {
         <div className="result-stats-row">
           <div className="r-box">
             <small>Peringkat</small>
-            <strong>#2</strong>
+            <strong>#1</strong>
           </div>
           <div className="r-box">
             <small>Total poin</small>
@@ -188,7 +203,7 @@ export default function MobilePreviewView() {
           className="btn-dark-ghost full-w"
           onClick={handleBackToSim}
         >
-          Kembali ke soal (simulasi)
+          Soal berikutnya (simulasi)
         </button>
       </div>
     </section>

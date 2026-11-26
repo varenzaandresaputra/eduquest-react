@@ -12,8 +12,16 @@ import {
   sessionHistory,
 } from "./data/initialData";
 import "./index.css";
+import "./App.css";
 
 const STORAGE_KEY = "eduquest_gameedu_v1";
+
+const members = [
+  { id: 1, name: "Varenza Andre Saputra", nim: "2455202073" },
+  { id: 2, name: "Ilham Alfiando", nim: "2455202032" },
+  { id: 3, name: "Dendi Perdiansah", nim: "2455202020" },
+  { id: 4, name: "Apri Yansyah", nim: "2455202010" },
+];
 
 export default function App() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -143,7 +151,7 @@ export default function App() {
           <TerritoryGridView questions={questions} />
         )}
 
-        {activeMenu === "mobile" && <MobilePreviewView />}
+        {activeMenu === "mobile" && <MobilePreviewView questions={questions} />}
 
         {(activeMenu === "kelas-siswa" ||
           activeMenu === "laporan" ||
@@ -156,10 +164,16 @@ export default function App() {
               {activeMenu === "pengaturan" && "Pengaturan EduQuest"}
             </h2>
             <p>
-              Peserta didik terdaftar di rombel <strong>{activeClass.name}</strong>:
-              Raka, Nadia, Bima, dan Sinta (terbagi dalam Tim Garuda, Rajawali,
-              Elang, dan Merpati).
+              Anggota terdaftar di rombel <strong>{activeClass.name}</strong>{" "}
+              (terbagi dalam Tim Garuda, Rajawali, Elang, dan Merpati):
             </p>
+            <ul>
+              {members.map((member) => (
+                <li key={member.id}>
+                  <strong>{member.name}</strong> ({member.nim})
+                </li>
+              ))}
+            </ul>
           </section>
         )}
       </main>
